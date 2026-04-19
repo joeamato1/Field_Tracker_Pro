@@ -8,11 +8,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+  }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #d8d8d8;
     margin: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
 
@@ -78,15 +83,17 @@
 
   #map-area {
     overflow: hidden;
-    display: block;
+    flex: 1;
+    min-height: 0;
     background: #d8d8d8;
     padding: 0;
     width: 100%;
+    position: relative;
   }
   #map-svg {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
   }
 
   .state {
@@ -128,8 +135,6 @@
 
   @media (max-width: 540px) {
     #modal-legend { display: none; }
-    #map-area { padding: 0; }
-    #map-svg { transform: scale(1.2); transform-origin: top center; }
   }
 </style>
 </head>
@@ -1102,6 +1107,10 @@ function loadMap() {
   d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(us => {
     document.getElementById("map-loading").style.display = "none";
     document.getElementById("map-svg").style.display = "block";
+    if (window.innerWidth <= 540) {
+      document.getElementById("map-svg").setAttribute("viewBox", "60 95 830 500");
+      document.getElementById("map-svg").setAttribute("preserveAspectRatio", "xMidYMin meet");
+    }
 
     const allStates = topojson.feature(us, us.objects.states);
     const contiguous = {
